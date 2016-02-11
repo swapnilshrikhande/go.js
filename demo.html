@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Go Game Demo</title>
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+    <script src="go.js"></script>
+  </head>
+  <body>
+    <div id="main">
+        <div class="go-board" data-size="9" >
+        </div>
+    </div>
+    <script>
+
+      $(document).ready(function(){
+          //init the game
+          $(".go-board").go({
+            boardsize : 9
+          });
+      });
+
+    </script>
+  </body>
+</html>
