@@ -12,3 +12,5 @@ Instead please use http://playgo.to/iwtg/en/ to learn Go and https://online-go.c
 2. Handicap rule
 3. Point Calculation
 4. Komi
+
+![alt tag] (http://i.imgur.com/bX4zOti.png)
