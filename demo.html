@@ -2,54 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Go Game Demo</title>
+    <title>Go</title>
+    <link rel="stylesheet" type="text/css" href="go.css">
     <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
     <script src="go.js"></script>
-
-    <style>
-    .intersection {
-        height: 40px;
-        width:  40px;
-        border: 1px solid;
-        position: absolute;
-    }
-
-    .intersection .vertical-line {
-        border-left: 1px solid;
-        margin-left: 50%;
-        height: 100%
-    }
-
-    .intersection .horizontal-line {
-        border-top: 1px solid;
-        margin-top: -50%;
-        width: 100%
-    }
-
-    .intersection .stone{
-        height: 30px;
-        width: 30px;
-        margin-left: 7%;
-        margin-top: -45%;
-        border-radius: 25px;
-        border: 2px solid black;
-        z-index: 100;
-    }
-
-    .empty.intersection .stone {
-        display: none;
-    }
-
-    .black.intersection .stone {
-        background-color: black;
-    }
-
-    .white.intersection .stone {
-        background-color: snow;
-    }
-
-    </style>
-
   </head>
   <body>
     <div id="main">
