@@ -20,11 +20,11 @@
 .intersection .stone{
     height: 30px;
     width: 30px;
-    margin-left: 7%;
-    margin-top: -45%;
+    margin-left: 15%;
+    margin-top: -40%;
     border-radius: 25px;
-    border: 2px solid black;
     z-index: 100;
+    box-shadow: 2px 2px 5px rgb(53, 53, 53);
 }
 
 .empty.intersection .stone {
