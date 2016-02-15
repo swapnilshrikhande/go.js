@@ -4,12 +4,37 @@
     <meta charset="utf-8">
     <title>Go</title>
     <link rel="stylesheet" type="text/css" href="go.css">
-    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="./lib/jquery-1.12.0.min.js"></script>
     <script src="go.js"></script>
   </head>
   <body>
     <div id="main">
-        <div class="go-board" data-size="9" >
+            <div class="go-board" data-size="9" >
+        </div>
+            <div class="score">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="current-player current-black">
+                            Black
+                        </th>
+                        <th class="current-player current-white">
+                            White
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="black-score">
+                        </td>
+                        <td class="white-score">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pass-button-div">
+            <button class="pass-button"> Pass Chance </button>
         </div>
     </div>
     <script>
@@ -17,7 +42,9 @@
       $(document).ready(function(){
           //init the game
           $(".go-board").go({
-            boardsize : 9
+            boardsize : 9,
+            passbutton : ".pass-button",
+            scoreboard : ".score"
           });
       });
 

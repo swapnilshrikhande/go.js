@@ -13,6 +13,7 @@ gogame.BOARD_MARGIN = 10;
 //Variables
 gogame.board = [];
 
+
 //simple html templates
 gogame.INTERSECTION_TEMPLATE =
          '<div class="empty intersection" data-row="1" data-col="1">'
@@ -28,6 +29,8 @@ $.fn.go = function(options) {
     console.log("Options ",options);
     if( options ){
         gogame["size"] = options.boardsize;
+        gogame["passbutton"] = options.passbutton;
+        gogame["scoreboard"] = options.scoreboard;
     }
     gogame["boardDomElem"] = this;
     gogame.initialize();
@@ -40,6 +43,8 @@ gogame.initialize = function(){
     this.current_color = gogame.BLACK;
     this.size = this.size || gogame.DEFAULT_BOARDSIZE;
     this.board = this.createBoard(this.size);
+    this.whitescore = 0;
+    this.blackscore = 0;
     this.last_move_passed = false;
     this.in_atari = false;
     this.attempted_suicide = false;
@@ -100,8 +105,15 @@ gogame.initBoardView = function(){
                           .append(newElementsArr)
                           .on("click",".intersection",this.playEventHandler)
                           .css("height",boardHeight)
-                          .css("width",boardWidth)
-                          .css("background-color","#ff9900");
+                          .css("width",boardWidth);
+    var self = this;
+    $( this.passbutton ).click(function(event){
+        self.pass();
+        return false;//stop bubble
+    });
+
+    //refresh to show initial score
+    gogame.refreshBoard();
 }
 
 gogame.getCellPositionCss = function(row,col){
@@ -135,6 +147,8 @@ gogame.refreshBoard = function(){
         }
     }
 
+    gogame.update_scoreboard();
+
     $(emptyIntersections).removeClass("white black").addClass("empty");
     $(whiteIntersections).removeClass("empty black").addClass("white");
     $(blackIntersectons).removeClass("white empty").addClass("black");
@@ -144,13 +158,16 @@ gogame.refreshBoard = function(){
     console.log("blackIntersectons",blackIntersectons);
 };
 
+gogame.update_scoreboard = function(){
 
-/*
-gogame.Intersection = function(){
-    this. = gogame.EMPTY;
-    //creates new empty dom element
-    this.elem  = $(gogame.INTERSECTION_TEMPLATE);
-};*/
+    //update scoreboard
+    var currentplayer = this.get_current_player_name().toLowerCase();
+    var scoreboard = $( this.scoreboard );
+    scoreboard.find(".current-player").css("background-color","white");
+    scoreboard.find(".current-"+currentplayer).css("background-color","lightgreen");
+    scoreboard.find(".black-score").text(this.blackscore);
+    scoreboard.find(".white-score").text(this.whitescore);
+};
 
 //game play methods
 /*
@@ -159,6 +176,7 @@ gogame.Intersection = function(){
 gogame.switch_player = function() {
     this.current_color =
         this.current_color == gogame.BLACK ? gogame.WHITE : gogame.BLACK;
+    //gogame.update_scoreboard();
 };
 
 gogame.get_current_player_name = function() {
@@ -170,7 +188,7 @@ gogame.get_current_player_name = function() {
  */
 gogame.pass = function() {
 
-    if ( this.last_move_passed ) {
+    if ( this.last_move_passed == true) {
         this.end_game();
     }
 
@@ -182,6 +200,17 @@ gogame.pass = function() {
  * Called when the game ends (both players passed)
  */
 gogame.end_game = function() {
+
+    var isTie  = this.whitescore === this.blackscore;
+
+    var winner = !isTie && this.whitescore > this.blackscore ? "White" : "Black";
+
+    if(isTie) {
+        alert("Game Ends, A Tie! ");
+    } else {
+        alert("Game Ends, Winner : "+winner);
+    }
+
     console.log("GAME OVER");
 };
 
@@ -208,7 +237,7 @@ gogame.play = function(row, col) {
 
     $(neighbors).each(function(index,n) {
 
-        var state = self.board[n[0]][n[1]];
+        var state = self.colorAt(n);
 
         if (state != gogame.EMPTY && state != color) {
 
@@ -230,18 +259,35 @@ gogame.play = function(row, col) {
         return false;
     }
 
+    //custom scoring
+    if( color === gogame.WHITE ) {
+        this.whitescore -= 0.5;
+    } else if( color ===  gogame.BLACK ){
+        this.blackscore -= 0.5;
+    }
+
     var self = this;
     $(captured).each(function(index,group) {
-
+        
         //loop over each stone in the group
         $(group["stones"]).each( function(index, stone) {
             self.board[stone[0]][stone[1]] = gogame.EMPTY;
         });
 
+        //add up to score who wins the stones
+        //and reduce from the loser
+        if( color === gogame.WHITE ) {
+            self.whitescore += group["stones"].length;
+            self.blackscore -= group["stones"].length;
+        } else if( color ===  gogame.BLACK ) {
+            self.blackscore += group["stones"].length;
+            self.whitescore -= group["stones"].length;
+        }
     });
 
-    if (atari)
+    if (atari) {
         this.in_atari = true;
+    }
 
     this.last_move_passed = false;
     this.switch_player();
@@ -264,6 +310,12 @@ gogame.get_adjacent_intersections = function(row , col) {
         neighbors.push([row, col - 1]);
     return neighbors;
 };
+
+gogame.colorAt = function(pointArr){
+    var rowN  = pointArr[0];
+    var colN  = pointArr[1];
+    return this.board[rowN][colN];
+}
 
 /*
  * Performs a breadth-first search about an (row,col) position to find recursively
@@ -296,7 +348,7 @@ gogame.get_group = function(row, col) {
         var self = this;
         $(neighbors).each(function(index,n) {
 
-            var state = self.board[n[0]][n[1]];
+            var state = self.colorAt(n);
 
             if ( state == gogame.EMPTY ) {
                 count++;

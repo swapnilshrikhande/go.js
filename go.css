@@ -1,3 +1,19 @@
+.go-board{
+    background-color:#ff9900;
+    float:left;
+}
+
+.score{
+    float:left;
+    margin-left: 25px;
+}
+
+.pass-button-div{
+    padding: 5px;
+    text-align: center;
+    clear:both;
+}
+
 .intersection {
     height: 40px;
     width:  40px;
@@ -37,4 +53,22 @@
 
 .white.intersection .stone {
     background-color: snow;
+}
+/*Table styling*/
+table, td, th {
+  border: 1px solid #ccc;
+}
+
+table {
+  background-color: #fff;
+  box-shadow: 0 2px 2px #ccc;
+  width: 100%;
+}
+
+td, th {
+  padding: 10px 5px;
+}
+
+th {
+  cursor: pointer;
 }
